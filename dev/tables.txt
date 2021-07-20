@@ -1,0 +1,77 @@
+CREATE TABLE product (
+   id  SERIAL PRIMARY KEY,
+   title varchar(255),
+   description text
+);
+
+CREATE TABLE stock (
+   id  SERIAL PRIMARY KEY,
+   price numeric(8,2),
+   product int,
+   discountAbsolute numeric(8,2),
+   discountRelative int,
+   quantity int,
+   color varchar(255),
+   size varchar(255),
+   CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id)
+);
+
+CREATE TABLE media (
+   id  SERIAL PRIMARY KEY,
+   product int,
+   type int,
+   path varchar(255),
+   CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id)
+);
+
+CREATE TABLE person (
+   id  SERIAL PRIMARY KEY,
+   email varchar(255),
+   password varchar(255),
+   title varchar(20),
+   firstName varchar(255),
+   lastName varchar(255),
+   userLevel int
+);
+
+CREATE TABLE shoppingCard (
+   id  SERIAL PRIMARY KEY,
+   product int,
+   person int,
+   amount int,
+   color varchar(255),
+   size varchar(255),
+   CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id),
+   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
+);
+
+CREATE TABLE address (
+   id  SERIAL PRIMARY KEY,
+   person int,
+   street varchar(255),
+   houseNumber varchar(255),
+   city varchar(255),
+   postCode varchar(255),
+   country varchar(255),
+   isPrimary boolean,
+   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
+);
+
+CREATE TABLE customerOrder (
+   id  SERIAL PRIMARY KEY,
+   person int,
+   orderTime timestamp,
+   shippingTime timestamp,
+   trackingNumber varchar(255),
+   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
+);
+
+CREATE TABLE orderItem (
+   id  SERIAL PRIMARY KEY,
+   customerOrder int,
+   amount int,
+   color varchar(255),
+   size varchar(255),
+   price numeric(8,2),
+   CONSTRAINT fk_order FOREIGN KEY(customerOrder) REFERENCES customerOrder(id)
+);

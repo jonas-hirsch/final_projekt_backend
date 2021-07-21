@@ -1,2 +1,24 @@
 ### GET all tags
 GET http://localhost:3000/products
+
+
+### Create a new product
+POST  http://localhost:3000/products
+content-type: application/json
+
+{
+  "title": "WBS Shirt",
+  "description": "A nice t-shirt with the WBS logo"
+}
+
+### Update a product
+PUT  http://localhost:3000/products/1
+content-type: application/json
+
+{
+  "title": "New WBS",
+  "description": "A nice t-shirt with the WBS logo"
+}
+
+### Delete a product
+DELETE  http://localhost:3000/products/3

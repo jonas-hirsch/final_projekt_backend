@@ -1,0 +1,38 @@
+### GET all stock rows
+GET http://localhost:3000/products/stock
+
+### GET all stock rows for a specific product
+GET http://localhost:3000/products/stock/4
+
+
+### Set the values of a stock entry
+POST  http://localhost:3000/products/stock/4
+content-type: application/json
+
+{
+  "price": 4.99,
+  # "discountAbsolute": 0,
+  # "discountRelative": 0,
+  "quantity": 100,
+  "color": "blue",
+  "size": "m"
+}
+
+### Set the absolute quantity stock entry
+PATCH  http://localhost:3000/products/stock/changeAbsolute/1
+content-type: application/json
+
+{
+  "quantity": 200
+}
+
+### Set the relative quantity stock entry
+PATCH  http://localhost:3000/products/stock/changeRelative/12
+content-type: application/json
+
+{
+  "quantity": 5
+}
+
+### Delete a product
+DELETE  http://localhost:3000/products/stock/9

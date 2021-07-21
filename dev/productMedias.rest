@@ -1,0 +1,6 @@
+### GET all media elements for a specific product
+GET http://localhost:3000/products/media/4
+
+
+### Deletes the product media with the given id
+DELETE  http://localhost:3000/products/media/9

@@ -68,7 +68,7 @@ const deleteProduct = async (req, res) => {
     };
     const queryResult = await pool.query(deleteQuery);
     if (queryResult.rowCount === 0) {
-      res
+      return res
         .status(404)
         .send(
           `The product with the ID ${id} does not exist in the database. Delete failed.`

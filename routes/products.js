@@ -9,6 +9,7 @@ const validateTitleAndDescription = [
 ];
 /* GET users listing. */
 router.get("/", productController.getAllProducts);
+router.get("/:id", productController.getSingleProduct);
 router.post(
   "/",
   validateTitleAndDescription,

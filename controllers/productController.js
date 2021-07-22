@@ -9,15 +9,20 @@ const getAllProducts = async (req, res) => {
     if (productRows.length < 1) {
       return res.status(404).send("Could not find any products.");
     }
-    const mediaPromises = productRows.map((result) => {
-      return pool.query(`SELECT * FROM media WHERE product=$1`, [result.id]);
-    });
-    const stockPromises = productRows.map((result) => {
-      return pool.query(`SELECT * FROM stock WHERE product=$1`, [result.id]);
+    const mediaPromises = productRows.map(async (result) => {
+      return await pool.query(`SELECT * FROM media WHERE product=$1`, [
+        result.id,
+      ]);
     });
     const mediaResults = await Promise.all(mediaPromises);
     mediaResults.forEach((media, index) => {
       productRows[index].media = media.rows;
+    });
+
+    const stockPromises = productRows.map(async (result) => {
+      return await pool.query(`SELECT * FROM stock WHERE product=$1`, [
+        result.id,
+      ]);
     });
 
     const stockResult = await Promise.all(stockPromises);

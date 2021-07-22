@@ -8,6 +8,7 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/products");
 const productsMediaRouter = require("./routes/productsMedia");
+const productsStockRouter = require("./routes/productsStock");
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/products", productsRouter);
 app.use("/products/media", productsMediaRouter);
+app.use("/products/stock", productsStockRouter);
 
 module.exports = app;

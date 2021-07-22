@@ -4,13 +4,28 @@ const { validationResult } = require("express-validator");
 
 const getAllProducts = async (req, res) => {
   try {
-    const queryResult = await pool.query("SELECT * FROM product");
+    const { rows: productRows } = await pool.query("SELECT * FROM product");
 
-    if (queryResult.rowCount < 1) {
+    if (productRows.length < 1) {
       return res.status(404).send("Could not find any products.");
     }
+    const mediaPromises = productRows.map((result) => {
+      return pool.query(`SELECT * FROM media WHERE product=$1`, [result.id]);
+    });
+    const stockPromises = productRows.map((result) => {
+      return pool.query(`SELECT * FROM stock WHERE product=$1`, [result.id]);
+    });
+    const mediaResults = await Promise.all(mediaPromises);
+    mediaResults.forEach((media, index) => {
+      productRows[index].media = media.rows;
+    });
 
-    res.send(queryResult.rows);
+    const stockResult = await Promise.all(stockPromises);
+    stockResult.forEach((stock, index) => {
+      productRows[index].stock = stock.rows;
+    });
+
+    res.send(productRows);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);

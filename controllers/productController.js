@@ -39,7 +39,12 @@ const getSingleProduct = async (req, res) => {
       values: [id],
     };
     const queryResult = await pool.query(getSingleQuery);
-
+    queryResult.rows[0].media = (
+      await pool.query(`SELECT * FROM media WHERE product=$1`, [id])
+    ).rows;
+    queryResult.rows[0].stock = (
+      await pool.query(`SELECT * FROM stock WHERE product=$1`, [id])
+    ).rows;
     if (queryResult.rowCount < 1) {
       return res
         .status(404)

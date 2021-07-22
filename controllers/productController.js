@@ -4,13 +4,34 @@ const { validationResult } = require("express-validator");
 
 const getAllProducts = async (req, res) => {
   try {
-    const queryResult = await pool.query("SELECT * from product");
+    const queryResult = await pool.query("SELECT * FROM product");
 
     if (queryResult.rowCount < 1) {
       return res.status(404).send("Could not find any products.");
     }
 
     res.send(queryResult.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+const getSingleProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const getSingleQuery = {
+      text: `SELECT * FROM product WHERE id=$1`,
+      values: [id],
+    };
+    const queryResult = await pool.query(getSingleQuery);
+
+    if (queryResult.rowCount < 1) {
+      return res
+        .status(404)
+        .send(`Could not find the product with the id ${id}.`);
+    }
+
+    res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
@@ -84,6 +105,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getSingleProduct,
   createNewProduct,
   updateProduct,
   deleteProduct,

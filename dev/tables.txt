@@ -24,6 +24,8 @@ CREATE TABLE media (
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id)
 );
 
+CREATE TYPE role AS ENUM ('admin', 'customer');
+
 CREATE TABLE person (
    id  SERIAL PRIMARY KEY,
    email varchar(255),
@@ -31,7 +33,7 @@ CREATE TABLE person (
    title varchar(20),
    firstName varchar(255),
    lastName varchar(255),
-   userLevel int
+   role role
 );
 
 CREATE TABLE shoppingCard (

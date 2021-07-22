@@ -7,7 +7,7 @@ router.get("/", personController.getAllPersons);
 router.get("/:id", personController.getSinglePerson);
 router.post("/", personController.createNewPerson);
 router.put("/:id", personController.updatePerson);
-router.patch("/userLevel/:id", personController.setUserLevel);
+router.patch("/userLevel/:id", personController.setRole);
 router.delete("/:id", personController.deletePerson);
 
 module.exports = router;

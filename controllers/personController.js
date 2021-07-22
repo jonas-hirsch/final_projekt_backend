@@ -92,13 +92,13 @@ const deletePerson = async (req, res) => {
   }
 };
 
-const setUserLevel = async (req, res) => {
+const setRole = async (req, res) => {
   const { id } = req.params;
-  const { userLevel } = req.body;
+  const { role } = req.body;
   try {
     const query = {
-      text: `UPDATE person SET userlevel=$2 WHERE id=$1 RETURNING *`,
-      values: [id, userLevel],
+      text: `UPDATE person SET role=$2 WHERE id=$1 RETURNING *`,
+      values: [id, role],
     };
     const queryResult = await pool.query(query);
     if (queryResult.rowCount === 0) {
@@ -122,5 +122,5 @@ module.exports = {
   createNewPerson,
   updatePerson,
   deletePerson,
-  setUserLevel,
+  setRole,
 };

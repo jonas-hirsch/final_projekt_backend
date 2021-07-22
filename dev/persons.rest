@@ -37,5 +37,5 @@ PATCH  http://localhost:3000/persons/userLevel/1
 content-type: application/json
 
 {
-  "userLevel": 2
-}
+  "role": "customer"
+} 

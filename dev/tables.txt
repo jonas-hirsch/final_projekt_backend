@@ -6,7 +6,7 @@ CREATE TABLE product (
 
 CREATE TABLE stock (
    id  SERIAL PRIMARY KEY,
-   price numeric(8,2),
+   price real,
    product int,
    discountAbsolute numeric(8,2),
    discountRelative int,
@@ -41,6 +41,8 @@ CREATE TABLE shoppingCard (
    amount int,
    color varchar(255),
    size varchar(255),
+   valideFrom timestamp,
+   valideTo timestamp,
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id),
    CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
 );

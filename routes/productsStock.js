@@ -5,7 +5,7 @@ const upload = require("../utils/fileUpload");
 
 router.get("/", productStockController.getAllStock);
 router.get("/:productId", productStockController.getAvailableStockForProduct);
-router.put("/:productId", productStockController.updateStockObject);
+router.put("/:id", productStockController.updateStockObject);
 router.post("/:productId", productStockController.addNewStockObjectForProduct);
 router.patch(
   "/changeAbsolute/:id",

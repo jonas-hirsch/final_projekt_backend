@@ -10,12 +10,14 @@ POST  http://localhost:3000/products/stock/4
 content-type: application/json
 
 {
-  "price": 4.99,
+  "price": 6.99,
   # "discountAbsolute": 0,
   # "discountRelative": 0,
   "quantity": 100,
   "color": "blue",
-  "size": "m"
+  "size": "m",
+  "valideFrom": "2021-06-22 19:10:25-02"
+  # "valideTo": "2022-06-22 19:10:25-07"
 }
 
 ### Set the absolute quantity stock entry
@@ -32,6 +34,20 @@ content-type: application/json
 
 {
   "quantity": 5
+}
+
+### Set the values of a stock entry
+PUT  http://localhost:3000/products/stock/17
+content-type: application/json
+
+{
+  "price": 8.99,
+  # "discountAbsolute": 0,
+  "discountRelative": 10,
+  "color": "blue",
+  "size": "m",
+  "valideFrom": null,
+  "valideTo": "2022-06-22 19:10:25-07"
 }
 
 ### Delete a product

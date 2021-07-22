@@ -20,7 +20,7 @@ const getAllStock = async (req, res) => {
 const getAvailableStockForProduct = async (req, res) => {
   const { productId } = req.params;
   const query = {
-    text: `SELECT * FROM stock WHERE product = $1`,
+    text: `SELECT * FROM stock WHERE product = $1 ORDER BY price`,
     values: [productId],
   };
   try {
@@ -43,10 +43,37 @@ const getAvailableStockForProduct = async (req, res) => {
 
 const updateStockObject = async (req, res) => {
   const { id } = req.params;
-  const { price, discount, color, size } = req.body;
+  const {
+    price,
+    discountAbsolute,
+    discountRelative,
+    color,
+    size,
+    valideFrom,
+    valideTo,
+  } = req.body;
   const query = {
-    text: `UPDATE stock SET price=$2, discount=$3, color=$4, size=$5 WHERE id=$1`,
-    values: [id, price, discount, color, size],
+    text: `UPDATE stock 
+    SET 
+      price=$2, 
+      discountAbsolute=$3, 
+      discountRelative=$4, 
+      color=$5, 
+      size=$6, 
+      valideFrom=$7, 
+      valideTo=$8 
+    WHERE id=$1
+    RETURNING *`,
+    values: [
+      id,
+      price,
+      discountAbsolute,
+      discountRelative,
+      color,
+      size,
+      valideFrom,
+      valideTo,
+    ],
   };
   try {
     const queryResult = await pool.query(query);
@@ -64,10 +91,20 @@ const updateStockObject = async (req, res) => {
 
 const addNewStockObjectForProduct = async (req, res) => {
   const { productId } = req.params;
-  const { price, discountAbsolute, discountRelative, color, size, quantity } =
-    req.body;
+  const {
+    price,
+    discountAbsolute,
+    discountRelative,
+    color,
+    size,
+    quantity,
+    valideFrom,
+    valideTo,
+  } = req.body;
   const query = {
-    text: `INSERT INTO stock (product, price, discountAbsolute, discountRelative, quantity, color, size) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+    text: `INSERT INTO stock (product, price, discountAbsolute, discountRelative, quantity, color, size, valideFrom, valideTo) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+      RETURNING *`,
     values: [
       productId,
       price,
@@ -76,6 +113,8 @@ const addNewStockObjectForProduct = async (req, res) => {
       quantity,
       color,
       size,
+      valideFrom,
+      valideTo,
     ],
   };
   try {

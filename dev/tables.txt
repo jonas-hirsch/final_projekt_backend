@@ -70,10 +70,12 @@ CREATE TABLE customerOrder (
 
 CREATE TABLE orderItem (
    id  SERIAL PRIMARY KEY,
+   product int,
    customerOrder int,
    amount int,
    color varchar(255),
    size varchar(255),
    price numeric(8,2),
+   CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id),
    CONSTRAINT fk_order FOREIGN KEY(customerOrder) REFERENCES customerOrder(id)
 );

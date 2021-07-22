@@ -9,6 +9,7 @@ const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/products");
 const productsMediaRouter = require("./routes/productsMedia");
 const productsStockRouter = require("./routes/productsStock");
+const personRouter = require("./routes/persons");
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use("/", indexRouter);
 app.use("/products", productsRouter);
 app.use("/products/media", productsMediaRouter);
 app.use("/products/stock", productsStockRouter);
+app.use("/persons", personRouter);
 
 module.exports = app;

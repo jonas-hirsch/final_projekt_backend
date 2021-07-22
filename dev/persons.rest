@@ -1,0 +1,41 @@
+### GET all persons
+GET http://localhost:3000/persons
+
+### Get a single person by id
+GET  http://localhost:3000/persons/1
+
+### Create a new person
+POST  http://localhost:3000/persons
+content-type: application/json
+
+{
+  "email": "Ben@wbs.com",
+  "password": "password",
+  # "title": "Dr.",
+  "firstName": "Ben",
+  "lastName": "Paget"
+}
+
+### Update a person
+PUT  http://localhost:3000/persons/1
+content-type: application/json
+
+{
+  "email": "Ben@wbs.com",
+  "password": "password",
+  "title": "Dr.",
+  "firstName": "Ben",
+  "lastName": "Paget",
+  "userLevel": 1
+}
+
+### Delete a person
+DELETE  http://localhost:3000/persons/4
+
+### Delete a person
+PATCH  http://localhost:3000/persons/userLevel/1
+content-type: application/json
+
+{
+  "userLevel": 2
+}

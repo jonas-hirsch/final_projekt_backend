@@ -6,11 +6,11 @@ CREATE TABLE product (
 
 CREATE TABLE stock (
    id  SERIAL PRIMARY KEY,
-   price real,
+   price real CHECK (price >= 0),
    product int,
-   discountAbsolute numeric(8,2),
-   discountRelative int,
-   quantity int,
+   discountAbsolute real (discountAbsolute >= 0),
+   discountRelative int (discountRelative >= 0),
+   quantity int CHECK (quantity >= 0)
    color varchar(255),
    size varchar(255),
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id)

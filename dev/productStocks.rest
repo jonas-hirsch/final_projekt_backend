@@ -13,27 +13,27 @@ content-type: application/json
   "price": 6.99,
   # "discountAbsolute": 0,
   # "discountRelative": 0,
-  "quantity": 100,
+  "quantity": -10,
   "color": "blue",
-  "size": "m",
-  "valideFrom": "2021-06-22 19:10:25-02"
+  "size": "m"
+  # "valideFrom": "2021-06-22 19:10:25-02"
   # "valideTo": "2022-06-22 19:10:25-07"
 }
 
 ### Set the absolute quantity stock entry
-PATCH  http://localhost:3000/products/stock/changeAbsolute/1
+PATCH  http://localhost:3000/products/stock/changeAbsolute/17
 content-type: application/json
 
 {
-  "quantity": 200
+  "quantity": 50
 }
 
 ### Set the relative quantity stock entry
-PATCH  http://localhost:3000/products/stock/changeRelative/12
+PATCH  http://localhost:3000/products/stock/changeRelative/17
 content-type: application/json
 
 {
-  "quantity": 5
+  "quantity": -5
 }
 
 ### Set the values of a stock entry
@@ -41,13 +41,14 @@ PUT  http://localhost:3000/products/stock/17
 content-type: application/json
 
 {
-  "price": 8.99,
-  # "discountAbsolute": 0,
-  "discountRelative": 10,
+  "price": 5,
+  # "discountAbsolute": 5,
+  # "discountRelative": 0,
+  "quantity": 150,
   "color": "blue",
   "size": "m",
-  "valideFrom": null,
-  "valideTo": "2022-06-22 19:10:25-07"
+  "valideFrom": "2022-07-22 19:10:25-02:00"
+  # "valideTo": "2021-08-22 19:10:25-07:00"
 }
 
 ### Delete a product

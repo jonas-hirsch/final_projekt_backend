@@ -42,6 +42,11 @@ const getAvailableStockForProduct = async (req, res) => {
 };
 
 const updateStockObject = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const {
     price,
@@ -51,6 +56,7 @@ const updateStockObject = async (req, res) => {
     size,
     valideFrom,
     valideTo,
+    quantity,
   } = req.body;
   const query = {
     text: `UPDATE stock 
@@ -61,7 +67,8 @@ const updateStockObject = async (req, res) => {
       color=$5, 
       size=$6, 
       valideFrom=$7, 
-      valideTo=$8 
+      valideTo=$8,
+      quantity=$9
     WHERE id=$1
     RETURNING *`,
     values: [
@@ -73,6 +80,7 @@ const updateStockObject = async (req, res) => {
       size,
       valideFrom,
       valideTo,
+      quantity,
     ],
   };
   try {
@@ -90,6 +98,11 @@ const updateStockObject = async (req, res) => {
 };
 
 const addNewStockObjectForProduct = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { productId } = req.params;
   const {
     price,
@@ -136,6 +149,11 @@ const addNewStockObjectForProduct = async (req, res) => {
 };
 
 const setStockQuantityAbsolute = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   console.log("ID: " + id);
   const { quantity } = req.body;

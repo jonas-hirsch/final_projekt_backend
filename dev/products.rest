@@ -9,17 +9,19 @@ POST  http://localhost:3000/products
 content-type: application/json
 
 {
-  "title": "WBS Shirt",
-  "description": "A nice t-shirt with the WBS logo"
+  "title": "WBS Computer New Version XXX",
+  "description": "New Computer with category",
+  "categories": [2, 4]
 }
 
 ### Update a product
-PUT  http://localhost:3000/products/4
+PUT  http://localhost:3000/products/11
 content-type: application/json
 
 {
   "title": "New WBS",
-  "description": "A nice t-shirt with the WBS logo"
+  "description": "A nice t-shirt with the WBS logo",
+  "categories": [2]
 }
 
 ### Delete a product

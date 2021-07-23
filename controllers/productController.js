@@ -17,6 +17,12 @@ const getAllProducts = async (req, res) => {
         FROM   stock s
         WHERE  s.product = p.id
         ) id
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(c) AS category
+        FROM   productCategory pc
+        INNER JOIN category c ON c.id = pc.category
+        WHERE  pc.product = p.id
+      ) cat
     `);
 
     res.send(productRows);
@@ -41,7 +47,13 @@ const getSingleProduct = async (req, res) => {
         SELECT json_agg(s) AS stock
         FROM   stock s
         WHERE  s.product = p.id
-        ) id
+      ) id
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(c) AS category
+        FROM   productCategory pc
+        INNER JOIN category c ON c.id = pc.category
+        WHERE  pc.product = p.id
+      ) cat
       WHERE p.id=$1
     `,
       [id]

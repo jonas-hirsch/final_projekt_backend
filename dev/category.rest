@@ -1,0 +1,25 @@
+### Get all categories
+GET http://localhost:3000/categories/
+
+
+### Get category by id
+GET http://localhost:3000/categories/3
+
+### Get category by id
+POST http://localhost:3000/categories/
+content-type: application/json
+
+{
+  "name": "Gear Wrong"
+}
+
+### Update the name of a category
+PUT  http://localhost:3000/categories/4
+content-type: application/json
+
+{
+  "name": "Gear"
+}
+
+### Delete a category by id
+DELETE http://localhost:3000/categories/5

@@ -2,9 +2,7 @@ const { Pool } = require("pg");
 const pool = new Pool();
 const { validationResult } = require("express-validator");
 
-const getAllProducts = async (req, res) => {
-  try {
-    const { rows: productRows } = await pool.query(`
+const getProductQuery = `
       SELECT *
       FROM   product p
       CROSS  JOIN LATERAL (
@@ -23,7 +21,10 @@ const getAllProducts = async (req, res) => {
         INNER JOIN category c ON c.id = pc.category
         WHERE  pc.product = p.id
       ) cat
-    `);
+    `;
+const getAllProducts = async (req, res) => {
+  try {
+    const { rows: productRows } = await pool.query(getProductQuery);
 
     res.send(productRows);
   } catch (error) {
@@ -35,27 +36,7 @@ const getSingleProduct = async (req, res) => {
   const { id } = req.params;
   try {
     const { rows: productRows } = await pool.query(
-      `
-      SELECT *
-      FROM   product p
-      CROSS  JOIN LATERAL (
-        SELECT json_agg(m) AS media
-        FROM   media m
-        WHERE  m.product = p.id
-        ) c1
-      CROSS  JOIN LATERAL (
-        SELECT json_agg(s) AS stock
-        FROM   stock s
-        WHERE  s.product = p.id
-      ) id
-      CROSS  JOIN LATERAL (
-        SELECT json_agg(c) AS category
-        FROM   productCategory pc
-        INNER JOIN category c ON c.id = pc.category
-        WHERE  pc.product = p.id
-      ) cat
-      WHERE p.id=$1
-    `,
+      getProductQuery + ` WHERE p.id=$1`,
       [id]
     );
 

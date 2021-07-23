@@ -4,26 +4,20 @@ const { validationResult } = require("express-validator");
 
 const getAllProducts = async (req, res) => {
   try {
-    const { rows: productRows } = await pool.query("SELECT * FROM product");
-
-    if (productRows.length < 1) {
-      return res.status(404).send("Could not find any products.");
-    }
-    const mediaPromises = productRows.map((result) => {
-      return pool.query(`SELECT * FROM media WHERE product=$1`, [result.id]);
-    });
-    const stockPromises = productRows.map((result) => {
-      return pool.query(`SELECT * FROM stock WHERE product=$1`, [result.id]);
-    });
-    const mediaResults = await Promise.all(mediaPromises);
-    mediaResults.forEach((media, index) => {
-      productRows[index].media = media.rows;
-    });
-
-    const stockResult = await Promise.all(stockPromises);
-    stockResult.forEach((stock, index) => {
-      productRows[index].stock = stock.rows;
-    });
+    const { rows: productRows } = await pool.query(`
+      SELECT *
+      FROM   product p
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(m) AS media
+        FROM   media m
+        WHERE  m.product = p.id
+        ) c1
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(s) AS stock
+        FROM   stock s
+        WHERE  s.product = p.id
+        ) id
+    `);
 
     res.send(productRows);
   } catch (error) {
@@ -34,24 +28,32 @@ const getAllProducts = async (req, res) => {
 const getSingleProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const getSingleQuery = {
-      text: `SELECT * FROM product WHERE id=$1`,
-      values: [id],
-    };
-    const queryResult = await pool.query(getSingleQuery);
-    queryResult.rows[0].media = (
-      await pool.query(`SELECT * FROM media WHERE product=$1`, [id])
-    ).rows;
-    queryResult.rows[0].stock = (
-      await pool.query(`SELECT * FROM stock WHERE product=$1`, [id])
-    ).rows;
-    if (queryResult.rowCount < 1) {
+    const { rows: productRows } = await pool.query(
+      `
+      SELECT *
+      FROM   product p
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(m) AS media
+        FROM   media m
+        WHERE  m.product = p.id
+        ) c1
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(s) AS stock
+        FROM   stock s
+        WHERE  s.product = p.id
+        ) id
+      WHERE p.id=$1
+    `,
+      [id]
+    );
+
+    if (productRows.length < 1) {
       return res
         .status(404)
         .send(`Could not find the product with the id ${id}.`);
     }
 
-    res.send(queryResult.rows[0]);
+    res.send(productRows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);

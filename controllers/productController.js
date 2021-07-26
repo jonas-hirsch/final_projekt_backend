@@ -26,12 +26,17 @@ const getAllProducts = async (req, res) => {
   try {
     const { rows: productRows } = await pool.query(getProductQuery);
 
+    productRows.forEach((row) => {
+      replaceMediaFileNameByFullPath(row);
+    });
+
     res.send(productRows);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
   }
 };
+
 const getSingleProduct = async (req, res) => {
   const { id } = req.params;
   try {
@@ -46,7 +51,10 @@ const getSingleProduct = async (req, res) => {
         .send(`Could not find the product with the id ${id}.`);
     }
 
-    res.send(productRows[0]);
+    const row = productRows[0];
+    replaceMediaFileNameByFullPath(row);
+
+    res.send(row);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
@@ -132,6 +140,19 @@ const deleteProduct = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+function replaceMediaFileNameByFullPath(row) {
+  if (row.media) {
+    const mediaPath =
+      "https://" + process.env.MEDIA_URL + "/" + process.env.MEDIA_FOLDER + "/";
+
+    row.media.forEach((media) => {
+      if (row.media) {
+        media.path = mediaPath + media.path;
+      }
+    });
+  }
+}
 
 async function createProductCategoryMapping(categories, id) {
   const categoriesResult = await categories.map((category) => {

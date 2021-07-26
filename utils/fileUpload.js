@@ -1,20 +1,28 @@
 const multer = require("multer");
 const path = require("path");
+const FTPStorage = require("multer-ftp");
 
-const fileStorageEngine = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, path.join("public", "uploads"));
-  },
-  filename: (req, file, callback) => {
-    callback(null, Date.now() + path.extname(file.originalname));
-  },
-});
+// const fileStorageEngine = multer.diskStorage({
+//   destination: (req, file, callback) => {
+//     callback(null, path.join("public", "uploads"));
+//   },
+//   filename: (req, file, callback) => {
+//     callback(null, Date.now() + path.extname(file.originalname));
+//   },
+// });
 
 const upload = multer({
-  storage: fileStorageEngine,
+  storage: new FTPStorage({
+    ftp: {
+      host: process.env.MEDIA_URL,
+      // secure: false, // enables FTPS/FTP with TLS
+      user: process.env.MEDIA_USER,
+      password: process.env.MEDIA_PASSWORD,
+    },
+  }),
   fileFilter: (req, file, cb) => {
     const mediaType = getMediaType(file);
-    if (mediaType !== 1) {
+    if (mediaType !== -1) {
       file.mediaType = mediaType;
       cb(null, true);
     } else {

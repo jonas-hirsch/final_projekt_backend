@@ -1,0 +1,33 @@
+### Get all existing shopping card items
+GET http://localhost:3000/shoppingCards/all
+
+### Get all shopping card items for a user
+GET http://localhost:3000/shoppingCards/user/1
+
+### Create a new shopping card item
+POST  http://localhost:3000/shoppingCards
+content-type: application/json
+
+{
+  "product": 5,
+  "amount": 2,
+  "size": "M",
+  "color": "blue",
+  "person": 1
+}
+
+### Update a shopping card item
+PUT  http://localhost:3000/shoppingCards/1
+content-type: application/json
+
+{
+  "amount": 10,
+  "size": "L",
+  "color": "blue"
+}
+
+### DELETE a shopping card item by its id
+DELETE  http://localhost:3000/shoppingCards/deleteSingle/1
+
+### DELETE all shopping card items of a user by the user ID
+DELETE  http://localhost:3000/shoppingCards/deleteByUser/1

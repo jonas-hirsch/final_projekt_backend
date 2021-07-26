@@ -29,7 +29,7 @@ const uploadProductMedia = async (req, res) => {
     try {
       const insertQuery = {
         text: `Insert INTO media (product, type, path) VALUES ($1, $2, $3) RETURNING *`,
-        values: [productId, fileObject.mediaType, fileObject.filename],
+        values: [productId, fileObject.mediaType, fileObject.path],
       };
       const { rows } = await pool.query(insertQuery);
       return { ...rows[0] };

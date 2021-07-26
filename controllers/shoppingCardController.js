@@ -1,7 +1,6 @@
 const { Pool } = require("pg");
 const pool = new Pool();
 const { validationResult } = require("express-validator");
-const path = require("path");
 
 const getAllShoppingCardItems = async (req, res) => {
   try {
@@ -30,6 +29,11 @@ const getShoppingCarItemsByUserId = async (req, res) => {
 };
 
 const createNewShoppingCardItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { product, amount, size, color, person } = req.body;
   try {
     const query = {
@@ -47,6 +51,11 @@ const createNewShoppingCardItem = async (req, res) => {
   }
 };
 const updateShoppingCardItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const { amount, size, color } = req.body;
   try {

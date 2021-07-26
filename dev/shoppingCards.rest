@@ -5,23 +5,23 @@ GET http://localhost:3000/shoppingCards/all
 GET http://localhost:3000/shoppingCards/user/1
 
 ### Create a new shopping card item
-POST  http://localhost:3000/shoppingCards
+POST  http://localhost:3000/shoppingCards/single
 content-type: application/json
 
 {
   "product": 5,
-  "amount": 2,
+  "amount": -2,
   "size": "M",
   "color": "blue",
   "person": 1
 }
 
 ### Update a shopping card item
-PUT  http://localhost:3000/shoppingCards/1
+PUT  http://localhost:3000/shoppingCards/5
 content-type: application/json
 
 {
-  "amount": 10,
+  "amount": -10,
   "size": "L",
   "color": "blue"
 }

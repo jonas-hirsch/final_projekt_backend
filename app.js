@@ -14,6 +14,9 @@ const categoryRouter = require("./routes/category");
 const shoppingCardRouter = require("./routes/shoppingCardRouter");
 const orderItemRouter = require("./routes/orderItem");
 
+const customerOrderRouter = require("./routes/customerOrder");
+
+
 const app = express();
 
 app.use(cors());
@@ -30,6 +33,10 @@ app.use("/products/stock", productsStockRouter);
 app.use("/persons", personRouter);
 app.use("/categories", categoryRouter);
 app.use("/shoppingCards", shoppingCardRouter);
+
 app.use("/orderItems", orderItemRouter);
+
+app.use("/customerOrders", customerOrderRouter);
+
 
 module.exports = app;

@@ -69,6 +69,7 @@ const createNewAddress = async (req, res) => {
     req.body;
   try {
     if (primary) {
+      //If the new address is marked as primary -> Remove primary from all other addresses.
       const removePrimaryQuery = {
         text: `UPDATE address SET isPrimary=null WHERE person=$1`,
         values: [person],
@@ -135,13 +136,9 @@ const updateAddress = async (req, res) => {
 };
 
 const setAddressToPrimary = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id } = req.params;
   try {
+    // 1. Find the person for the given address
     const getPersonQuery = {
       text: `SELECT person FROM address WHERE id=$1`,
       values: [id],
@@ -156,18 +153,21 @@ const setAddressToPrimary = async (req, res) => {
         );
     }
 
+    // 2. Remove the primary mark from all addresses from the user of the given address
     const removePrimaryQuery = {
       text: `UPDATE address SET isPrimary=null WHERE person=$1`,
       values: [getPersonQueryResult.rows[0].person],
     };
     await pool.query(removePrimaryQuery);
 
+    // 3. Set the current address to be primary
     const updateQuery = {
       text: `UPDATE address SET isPrimary=true WHERE id=$1 RETURNING *`,
       values: [id],
     };
     await pool.query(updateQuery);
 
+    // 4. Get all addresses and return them.
     const personQuery = {
       text: `SELECT * FROM address WHERE person=$1`,
       values: [getPersonQueryResult.rows[0].person],

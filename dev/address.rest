@@ -1,0 +1,42 @@
+### GET all addresses
+GET http://localhost:3000/address
+
+### Get a single address by id
+GET  http://localhost:3000/address/id/1
+
+### Get all addresses by a person ID
+GET  http://localhost:3000/address/person/1
+
+### Create a new person
+POST  http://localhost:3000/address
+content-type: application/json
+
+{
+  "person": 1,
+  "street": "Hallweg",
+  "houseNumber": "4",
+  "city": "Konstanz",
+  "postcode": "86574",
+  "country": "Germany",
+  "primary": true
+}
+
+### Update a person
+PUT  http://localhost:3000/address/4
+content-type: application/json
+
+{
+  "street": "Hinterer Kirchweg",
+  "houseNumber": "7",
+  "city": "Berlin",
+  "postcode": "36589",
+  "country": "Germany",
+  "primary": true
+}
+
+### Set a address with the given ID to be primary of the person
+PATCH  http://localhost:3000/address/1
+
+### Delete a person
+DELETE  http://localhost:3000/address/4
+

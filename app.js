@@ -12,6 +12,7 @@ const productsStockRouter = require("./routes/productsStock");
 const personRouter = require("./routes/persons");
 const categoryRouter = require("./routes/category");
 const shoppingCardRouter = require("./routes/shoppingCardRouter");
+const addressRouter = require("./routes/address");
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use("/products/stock", productsStockRouter);
 app.use("/persons", personRouter);
 app.use("/categories", categoryRouter);
 app.use("/shoppingCards", shoppingCardRouter);
+app.use("/address", addressRouter);
 
 module.exports = app;

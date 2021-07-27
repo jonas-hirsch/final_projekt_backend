@@ -58,7 +58,8 @@ CREATE TABLE address (
    postCode varchar(255),
    country varchar(255),
    isPrimary boolean,
-   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
+   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id),
+   CONSTRAINT single_primary_address UNIQUE(person, isPrimary)
 );
 
 CREATE TABLE customerOrder (

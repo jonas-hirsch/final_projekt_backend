@@ -11,6 +11,7 @@ const productsMediaRouter = require("./routes/productsMedia");
 const productsStockRouter = require("./routes/productsStock");
 const personRouter = require("./routes/persons");
 const categoryRouter = require("./routes/category");
+const shoppingCardRouter = require("./routes/shoppingCardRouter");
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/products/media", productsMediaRouter);
 app.use("/products/stock", productsStockRouter);
 app.use("/persons", personRouter);
 app.use("/categories", categoryRouter);
+app.use("/shoppingCards", shoppingCardRouter);
 
 module.exports = app;

@@ -1,8 +1,6 @@
 const { Pool } = require("pg");
 const pool = new Pool();
 const { validationResult } = require("express-validator");
-const path = require("path");
-const { unlink } = require("fs");
 
 const getAllOrderItems = async (req, res) => {
   try {
@@ -64,6 +62,11 @@ const getOrderItemByOrder = async (req, res) => {
 };
 
 const createNewOrderItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { product, order, amount, color, size, price } = req.body;
   try {
     const query = {
@@ -80,6 +83,11 @@ const createNewOrderItem = async (req, res) => {
 };
 
 const updateOrderItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const { product, order, amount, color, size, price } = req.body;
   try {

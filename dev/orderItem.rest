@@ -17,11 +17,11 @@ content-type: application/json
   "amount": 10,
   "color": "red",
   "size": "L",
-  "price": 10.99
+  "price": -10.99
 }
 
 ### Update a product
-PUT  http://localhost:3000/orderItems/1
+PUT  http://localhost:3000/orderItems/4
 content-type: application/json
 
 {
@@ -30,7 +30,7 @@ content-type: application/json
   "amount": 100,
   "color": "red",
   "size": "XL",
-  "price": 10.99
+  "price": 5
 }
 
 ### Delete a product

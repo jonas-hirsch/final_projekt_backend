@@ -1,6 +1,7 @@
 const { Pool } = require("pg");
 const pool = new Pool();
 const { validationResult } = require("express-validator");
+var format = require("pg-format");
 
 const getAllShoppingCardItems = async (req, res) => {
   try {
@@ -45,6 +46,31 @@ const createNewShoppingCardItem = async (req, res) => {
     const queryResult = await pool.query(query);
 
     res.send(queryResult.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
+const createManyNewShoppingCardItems = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  let dataArray = [];
+  req.body.forEach((element) => {
+    let { product, amount, size, color, person } = element;
+    dataArray = [...dataArray, [product, amount, size, color, person]];
+  });
+  try {
+    const queryResult = await pool.query(
+      format(
+        "INSERT INTO shoppingCard (product,amount,size,color,person) VALUES %L RETURNING *",
+        dataArray
+      )
+    );
+    res.send(queryResult.rows);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
@@ -122,6 +148,7 @@ module.exports = {
   getAllShoppingCardItems,
   getShoppingCarItemsByUserId,
   createNewShoppingCardItem,
+  createManyNewShoppingCardItems,
   updateShoppingCardItem,
   deleteSingleShoppingCardItemById,
   deleteShoppingCardItemsByUserId,

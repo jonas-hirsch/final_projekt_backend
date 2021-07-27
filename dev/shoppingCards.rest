@@ -16,6 +16,28 @@ content-type: application/json
   "person": 1
 }
 
+### Create many new shopping card item
+POST  http://localhost:3000/shoppingCards/many
+content-type: application/json
+
+[
+  {
+    "product": 5,
+    "amount": 5,
+    "size": "M",
+    "color": "blue",
+    "person": 1
+  },
+  {
+    "product": 4,
+    "amount": -4,
+    "size": "M",
+    "color": "red",
+    "person": 1
+  }
+]
+
+
 ### Update a shopping card item
 PUT  http://localhost:3000/shoppingCards/5
 content-type: application/json

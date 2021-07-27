@@ -15,6 +15,7 @@ const shoppingCardRouter = require("./routes/shoppingCardRouter");
 const orderItemRouter = require("./routes/orderItem");
 
 const customerOrderRouter = require("./routes/customerOrder");
+const addressRouter = require("./routes/address");
 
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/shoppingCards", shoppingCardRouter);
 app.use("/orderItems", orderItemRouter);
 
 app.use("/customerOrders", customerOrderRouter);
+app.use("/address", addressRouter);
 
 
 module.exports = app;

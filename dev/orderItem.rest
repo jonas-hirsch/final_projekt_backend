@@ -1,0 +1,37 @@
+### GET all tags
+GET http://localhost:3000/orderItems
+
+### Update a single product by id
+GET  http://localhost:3000/orderItems/id/1
+
+### Update a single product by id
+GET  http://localhost:3000/orderItems/order/3
+
+### Create a new product
+POST  http://localhost:3000/orderItems
+content-type: application/json
+
+{
+  "product": 4,
+  "order": 3,
+  "amount": 10,
+  "color": "red",
+  "size": "L",
+  "price": 10.99
+}
+
+### Update a product
+PUT  http://localhost:3000/orderItems/1
+content-type: application/json
+
+{
+  "product": 4,
+  "order": 3,
+  "amount": 100,
+  "color": "red",
+  "size": "XL",
+  "price": 10.99
+}
+
+### Delete a product
+DELETE  http://localhost:3000/orderItems/1

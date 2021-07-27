@@ -1,7 +1,5 @@
 const { Pool } = require("pg");
 const pool = new Pool();
-const { validationResult } = require("express-validator");
-var format = require("pg-format");
 
 const getAllCustomerOrders = async (req, res) => {
   try {
@@ -22,6 +20,10 @@ const getOrderByOrderId = async (req, res) => {
       [id]
     );
 
+    if (queryResult.rows.length === 0) {
+      return res.status(404).send(`Could not find the order with the id ${id}`);
+    }
+
     res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
@@ -37,6 +39,14 @@ const getCustomerOrdersByUser = async (req, res) => {
       [userId]
     );
 
+    if (queryResult.rows.length === 0) {
+      return res
+        .status(404)
+        .send(
+          `Could not find any orders for the customer with the id ${userId}`
+        );
+    }
+
     res.send(queryResult.rows);
   } catch (error) {
     console.error(error);
@@ -45,11 +55,6 @@ const getCustomerOrdersByUser = async (req, res) => {
 };
 
 const createCustomerOrder = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { person, orderTime, shippingTime, trackingNumber } = req.body;
   try {
     const query = {
@@ -68,11 +73,6 @@ const createCustomerOrder = async (req, res) => {
 };
 
 const updateCustomerOrder = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id } = req.params;
   const { person, orderTime, shippingTime, trackingNumber } = req.body;
   try {
@@ -82,6 +82,10 @@ const updateCustomerOrder = async (req, res) => {
     };
     const queryResult = await pool.query(query);
 
+    if (queryResult.rows.length === 0) {
+      return res.status(404).send(`Could not find a order with the id ${id}`);
+    }
+
     res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
@@ -90,11 +94,6 @@ const updateCustomerOrder = async (req, res) => {
 };
 
 const setShippingInformation = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id } = req.params;
   const { shippingTime, trackingNumber } = req.body;
   try {
@@ -104,6 +103,10 @@ const setShippingInformation = async (req, res) => {
     };
     const queryResult = await pool.query(query);
 
+    if (queryResult.rows.length === 0) {
+      return res.status(404).send(`Could not find a order with the id ${id}`);
+    }
+
     res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
@@ -112,11 +115,6 @@ const setShippingInformation = async (req, res) => {
 };
 
 const setOrderShippingTime = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id } = req.params;
   const { shippingTime } = req.body;
   try {
@@ -126,6 +124,10 @@ const setOrderShippingTime = async (req, res) => {
     };
     const queryResult = await pool.query(query);
 
+    if (queryResult.rows.length === 0) {
+      return res.status(404).send(`Could not find a order with the id ${id}`);
+    }
+
     res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
@@ -134,11 +136,6 @@ const setOrderShippingTime = async (req, res) => {
 };
 
 const setTrackingNumber = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id } = req.params;
   const { trackingNumber } = req.body;
   try {
@@ -147,6 +144,10 @@ const setTrackingNumber = async (req, res) => {
       values: [trackingNumber, id],
     };
     const queryResult = await pool.query(query);
+
+    if (queryResult.rows.length === 0) {
+      return res.status(404).send(`Could not find a order with the id ${id}`);
+    }
 
     res.send(queryResult.rows[0]);
   } catch (error) {

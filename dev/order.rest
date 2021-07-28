@@ -3,4 +3,4 @@ POST http://localhost:3000/order/checkout/1
 
 
 ### Deletes the product media with the given id
-POST  http://localhost:3000/order/cancelOrder/72
+POST  http://localhost:3000/order/cancelOrder/76

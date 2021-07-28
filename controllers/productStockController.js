@@ -62,7 +62,6 @@ const getAvailableStockForProductSpecification = async (req, res) => {
             row.size.toLowerCase() === size.toLowerCase() &&
             row.color.toLowerCase() === color.toLowerCase()
         );
-        // console.log("stockItem: " + JSON.stringify(stockItem));
         item.stock = stockItem;
       });
     }

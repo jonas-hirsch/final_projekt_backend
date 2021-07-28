@@ -102,9 +102,6 @@ const createManyNewOrderItems = async (req, res) => {
   req.body.forEach((element) => {
     const { product, amount, size, color, customerOrder, stock } = element;
     const { price } = stock[0];
-    // console.log("Stock: ");
-    // console.log(stock);
-    // console.log("price" + price);
     dataArray = [
       ...dataArray,
       [product, amount, size, color, customerOrder, price],

@@ -88,7 +88,16 @@ const deleteShoppingCardItems = async (req) => {
 
 const cancelOrder = async (req, res) => {
   const { orderId } = req.params;
+  req.params.id = orderId;
   try {
+    const customerOrderResult = await customerOrderController.getOrderByOrderId(
+      req
+    );
+    if (!customerOrderResult.active) {
+      return res
+        .status(400)
+        .send(`The order with the id ${orderId} has already be canceled.`);
+    }
     // Set the order to be not active
     const updateOrderResult = await pool.query(
       `UPDATE customerOrder SET active=false WHERE id=$1 RETURNING *`,

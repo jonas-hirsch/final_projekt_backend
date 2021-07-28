@@ -65,10 +65,17 @@ const createCustomerOrder = async (req, res) => {
     };
     const queryResult = await pool.query(query);
 
-    res.send(queryResult.rows[0]);
+    if (res) {
+      return res.send(queryResult.rows[0]);
+    } else {
+      return queryResult.rows[0];
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 

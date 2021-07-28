@@ -41,6 +41,40 @@ const getAvailableStockForProduct = async (req, res) => {
   }
 };
 
+const getAvailableStockForProductSpecification = async (req, res) => {
+  let dataArray = [];
+  req.body.forEach((element) => {
+    dataArray.push(element.product);
+  });
+  try {
+    const queryResult = await pool.query(
+      "SELECT * FROM stock WHERE product = ANY($1::int[])",
+      [dataArray]
+    );
+    if (res) {
+      return res.send(queryResult.rows);
+    } else {
+      req.body.forEach((item) => {
+        const { product, size, color } = item;
+        const stockItem = queryResult.rows.filter(
+          (row) =>
+            row.product === product &&
+            row.size.toLowerCase() === size.toLowerCase() &&
+            row.color.toLowerCase() === color.toLowerCase()
+        );
+        // console.log("stockItem: " + JSON.stringify(stockItem));
+        item.stock = stockItem;
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
+  }
+};
+
 const updateStockObject = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -228,6 +262,7 @@ const deleteStock = async (req, res) => {
 module.exports = {
   getAllStock,
   getAvailableStockForProduct,
+  getAvailableStockForProductSpecification,
   updateStockObject,
   addNewStockObjectForProduct,
   setStockQuantityAbsolute,

@@ -1,6 +1,7 @@
 const { Pool } = require("pg");
 const pool = new Pool();
 const { validationResult } = require("express-validator");
+const format = require("pg-format");
 
 const getAllOrderItems = async (req, res) => {
   try {
@@ -47,17 +48,26 @@ const getOrderItemByOrder = async (req, res) => {
     const queryResult = await pool.query(query);
 
     if (queryResult.rowCount === 0) {
-      return res
-        .status(404)
-        .send(
-          `The order with the ID ${orderId} does not exist in the database.`
-        );
+      if (res) {
+        return res
+          .status(404)
+          .send(
+            `The order with the ID ${orderId} does not exist in the database.`
+          );
+      }
+      return [];
     }
 
-    res.send(queryResult.rows);
+    if (res) {
+      return res.send(queryResult.rows);
+    }
+    return queryResult.rows;
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 
@@ -79,6 +89,45 @@ const createNewOrderItem = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
+  }
+};
+
+const createManyNewOrderItems = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  let dataArray = [];
+  req.body.forEach((element) => {
+    const { product, amount, size, color, customerOrder, stock } = element;
+    const { price } = stock[0];
+    // console.log("Stock: ");
+    // console.log(stock);
+    // console.log("price" + price);
+    dataArray = [
+      ...dataArray,
+      [product, amount, size, color, customerOrder, price],
+    ];
+  });
+  try {
+    const queryResult = await pool.query(
+      format(
+        "INSERT INTO orderItem(product,amount,size,color,customerOrder,price) VALUES %L RETURNING *",
+        dataArray
+      )
+    );
+    if (res) {
+      return res.send(queryResult.rows);
+    } else {
+      return queryResult.rows;
+    }
+  } catch (error) {
+    console.error(error);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 
@@ -140,6 +189,7 @@ module.exports = {
   getOrderItemById,
   getOrderItemByOrder,
   createNewOrderItem,
+  createManyNewOrderItems,
   updateOrderItem,
   deleteOrderItem,
 };

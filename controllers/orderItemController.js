@@ -101,6 +101,13 @@ const createManyNewOrderItems = async (req, res) => {
   let dataArray = [];
   req.body.forEach((element) => {
     const { product, amount, size, color, customerOrder, stock } = element;
+    if (!stock || !stock[0]) {
+      throw Error(
+        `Error: can not get the price for following product: ${JSON.stringify(
+          element
+        )}.`
+      );
+    }
     const { price } = stock[0];
     dataArray = [
       ...dataArray,

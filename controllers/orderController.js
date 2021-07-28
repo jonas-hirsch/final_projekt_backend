@@ -33,6 +33,28 @@ const checkout = async (req, res) => {
     req.body = shoppingCardQueryResult.rows.filter((item) => item.amount != 0);
     await productStockController.getAvailableStockForProductSpecification(req);
 
+    // Verify if all articles in the shopping cart have an stock.
+    // If one article has no stock -> Cancel and delete the just created order.
+    const articleWithouStock = req.body.find(
+      (stockItem) => stockItem.stock.length === 0
+    );
+    if (articleWithouStock.stock.length === 0) {
+      console.log(
+        "ERROR: No stock available for all products:" +
+          JSON.stringify(articleWithouStock)
+      );
+      pool.query(`DELETE FROM customerOrder WHERE id=$1`, [
+        createOrderResult.id,
+      ]);
+      return res
+        .status(404)
+        .send(
+          `Can not find a stock for following article: ${JSON.stringify(
+            articleWithouStock
+          )}`
+        );
+    }
+
     // Insert all items from the shopping card that have an amout of more than 0 into the order items table
     // If the INSERT failed -> Delete customer order
     const insertResult = await insertItemsInOrderItemsTable(

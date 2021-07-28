@@ -35,25 +35,21 @@ const checkout = async (req, res) => {
 
     // Verify if all articles in the shopping cart have an stock.
     // If one article has no stock -> Cancel and delete the just created order.
-    const articleWithouStock = req.body.find(
-      (stockItem) => stockItem.stock.length === 0
+    const stockExistenceResult = await verifyStockExistence(
+      req,
+      res,
+      createOrderResult
     );
-    if (articleWithouStock.stock.length === 0) {
-      console.log(
-        "ERROR: No stock available for all products:" +
-          JSON.stringify(articleWithouStock)
-      );
-      pool.query(`DELETE FROM customerOrder WHERE id=$1`, [
-        createOrderResult.id,
-      ]);
-      return res
-        .status(404)
-        .send(
-          `Can not find a stock for following article: ${JSON.stringify(
-            articleWithouStock
-          )}`
-        );
-    }
+    if (stockExistenceResult !== true) return stockExistenceResult;
+
+    // Verify if all articles are in stock
+    const stockAmountCheckResult = await verifyStockAmount(
+      req,
+      res,
+      shoppingCardQueryResult,
+      createOrderResult
+    );
+    if (stockAmountCheckResult !== true) return stockAmountCheckResult;
 
     // Insert all items from the shopping card that have an amout of more than 0 into the order items table
     // If the INSERT failed -> Delete customer order
@@ -79,6 +75,54 @@ const createNewCustomerOrder = async (req, userId) => {
     req
   );
   return createOrderResult;
+};
+const verifyStockExistence = async (req, res, createOrderResult) => {
+  const articleWithouStock = req.body.find(
+    (stockItem) => stockItem.stock.length === 0
+  );
+  if (articleWithouStock && articleWithouStock.stock.length === 0) {
+    console.log(
+      "ERROR: No stock available for all products:" +
+        JSON.stringify(articleWithouStock)
+    );
+    pool.query(`DELETE FROM customerOrder WHERE id=$1`, [createOrderResult.id]);
+    return res
+      .status(404)
+      .send(
+        `Can not find a stock for following article: ${JSON.stringify(
+          articleWithouStock
+        )}`
+      );
+  }
+  return true;
+};
+const verifyStockAmount = async (
+  req,
+  res,
+  shoppingCardQueryResult,
+  createOrderResult
+) => {
+  for (const stockArticle of req.body) {
+    const shoppingCardArticle = shoppingCardQueryResult.rows.find((item) => {
+      return (
+        stockArticle.product === item.product &&
+        stockArticle.size.toLowerCase() === item.size.toLowerCase() &&
+        stockArticle.color.toLowerCase() === item.color.toLowerCase()
+      );
+    });
+    if (shoppingCardArticle.amount > stockArticle.stock[0].quantity) {
+      pool.query(`DELETE FROM customerOrder WHERE id=$1`, [
+        createOrderResult.id,
+      ]);
+      console.error(stockArticle);
+      return res
+        .status(404)
+        .send(
+          `The current stock for the article with the ID: ${stockArticle.product}, '${stockArticle.color}', '${stockArticle.size}' is lower than the ordered amount. Current articles in stock: ${stockArticle.stock[0].quantity}, articles in shopping cart: ${shoppingCardArticle.amount}`
+        );
+    }
+  }
+  return true;
 };
 const insertItemsInOrderItemsTable = async (req, createOrderResult) => {
   req.body.forEach(async (item) => (item.customerOrder = createOrderResult.id));

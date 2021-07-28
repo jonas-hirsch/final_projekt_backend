@@ -26,7 +26,7 @@ const getOrderByOrderId = async (req, res) => {
           .status(404)
           .send(`Could not find the order with the id ${id}`);
       }
-      throw Error("Could not find the order with the id ${id}");
+      throw Error(`Could not find the order with the id ${id}`);
     }
 
     if (res) {

@@ -70,10 +70,17 @@ const createManyNewShoppingCardItems = async (req, res) => {
         dataArray
       )
     );
-    res.send(queryResult.rows);
+    if (res) {
+      return res.send(queryResult.rows);
+    } else {
+      return queryResult.rows;
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 const updateShoppingCardItem = async (req, res) => {
@@ -119,28 +126,47 @@ const deleteSingleShoppingCardItemById = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-const deleteShoppingCardItemsByUserId = async (req, res) => {
+const deleteShoppingCardItemsByUserId = async (
+  req,
+  res,
+  dontDeleteZeroProducts
+) => {
   const { userId } = req.params;
   try {
-    const deleteQuery = {
+    let deleteQuery = {
       text: `DELETE FROM shoppingCard WHERE person=$1 RETURNING *`,
       values: [userId],
     };
-    const queryResult = await pool.query(deleteQuery);
-    if (queryResult.rowCount === 0) {
-      return res
-        .status(404)
-        .send(
-          `The user with the ID ${userId} has no products in its shopping card. Delete failed.`
-        );
+    if (dontDeleteZeroProducts) {
+      deleteQuery = {
+        text: `DELETE FROM shoppingCard WHERE person=$1 AND amount != 0 RETURNING *`,
+        values: [userId],
+      };
     }
 
-    res.send(
-      `Successfully deleted ${queryResult.rowCount} shopping cards items of the user with the ID ${userId}.`
-    );
+    const queryResult = await pool.query(deleteQuery);
+    if (queryResult.rowCount === 0) {
+      if (res) {
+        return res
+          .status(404)
+          .send(
+            `The user with the ID ${userId} has no products in its shopping card. Delete failed.`
+          );
+      }
+      return queryResult;
+    }
+
+    if (res) {
+      return res.send(
+        `Successfully deleted ${queryResult.rowCount} shopping cards items of the user with the ID ${userId}.`
+      );
+    }
+    return queryResult;
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
   }
 };
 

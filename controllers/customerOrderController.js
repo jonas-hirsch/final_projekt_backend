@@ -21,13 +21,24 @@ const getOrderByOrderId = async (req, res) => {
     );
 
     if (queryResult.rows.length === 0) {
-      return res.status(404).send(`Could not find the order with the id ${id}`);
+      if (res) {
+        return res
+          .status(404)
+          .send(`Could not find the order with the id ${id}`);
+      }
+      throw Error(`Could not find the order with the id ${id}`);
     }
 
-    res.send(queryResult.rows[0]);
+    if (res) {
+      return res.send(queryResult.rows[0]);
+    }
+    return queryResult.rows[0];
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 
@@ -65,10 +76,17 @@ const createCustomerOrder = async (req, res) => {
     };
     const queryResult = await pool.query(query);
 
-    res.send(queryResult.rows[0]);
+    if (res) {
+      return res.send(queryResult.rows[0]);
+    } else {
+      return queryResult.rows[0];
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 

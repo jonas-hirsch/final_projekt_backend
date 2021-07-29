@@ -68,6 +68,7 @@ CREATE TABLE customerOrder (
    orderTime timestamp,
    shippingTime timestamp,
    trackingNumber varchar(255),
+   active boolean DEFAULT true,
    CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
 );
 

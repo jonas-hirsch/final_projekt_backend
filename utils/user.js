@@ -1,5 +1,16 @@
 const jwt = require("jsonwebtoken");
 
+const destructToken = (token) => {
+  const secretKey = process.env.JWT_SECRET;
+  jwt.verify(token.split(" ")[1], secretKey, (err, verifiedJwt) => {
+    if (err) {
+      throw Error(err.message);
+    } else {
+      return verifiedJwt;
+    }
+  });
+};
+
 const createToken = (id) => {
   const payload = { _id: id };
   const secretKey = process.env.JWT_SECRET;
@@ -7,7 +18,5 @@ const createToken = (id) => {
   const token = jwt.sign(payload, secretKey);
   return token;
 };
-// trainerSchema.methods.createToken =
-// const Trainer = mongoose.model("Trainer", trainerSchema);
 
-module.exports = { createToken };
+module.exports = { createToken, destructToken };

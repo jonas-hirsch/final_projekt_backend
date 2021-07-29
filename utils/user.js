@@ -1,14 +1,28 @@
 const jwt = require("jsonwebtoken");
+const personController = require("../controllers/personController");
 
-const destructToken = (token) => {
+const destructToken = async (token) => {
   const secretKey = process.env.JWT_SECRET;
-  jwt.verify(token.split(" ")[1], secretKey, (err, verifiedJwt) => {
-    if (err) {
-      throw Error(err.message);
-    } else {
-      return verifiedJwt;
+  return await jwt.verify(
+    token.split(" ")[1],
+    secretKey,
+    async (err, verifiedJwt) => {
+      if (err) {
+        throw Error(err.message);
+      } else {
+        const userEmail = verifiedJwt._id;
+        const req = { body: { email: userEmail } };
+        try {
+          const user = await personController.getSinglePersonByEmail(req);
+
+          return user;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }
     }
-  });
+  );
 };
 
 const createToken = (id) => {

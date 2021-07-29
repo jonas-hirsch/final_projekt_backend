@@ -21,6 +21,11 @@ const authenticationRouter = require("./routes/authentication");
 const app = express();
 
 app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: "x-authorization-token",
+  })
+);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

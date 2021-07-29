@@ -9,6 +9,6 @@ const {
 
 authenticationRouter.post("/login", login);
 authenticationRouter.post("/register", register);
-authenticationRouter.post("/me", getUserInformation);
+authenticationRouter.get("/me", getUserInformation);
 
 module.exports = authenticationRouter;

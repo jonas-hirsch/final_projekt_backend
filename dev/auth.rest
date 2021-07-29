@@ -1,0 +1,19 @@
+### GET all media elements for a specific product
+POST http://localhost:3000/auth/login
+content-type: application/json
+
+{
+  "email": "Ben@wbs.com",
+  "password": "password"
+}
+
+### GET all media elements for a specific product
+POST http://localhost:3000/auth/register
+content-type: application/json
+
+{
+  "email": "Ben3@wbs.com",
+  "password": "password",
+  "firstName": "Ben",
+  "lastName": "Paget"
+}

@@ -28,7 +28,7 @@ CREATE TYPE role AS ENUM ('admin', 'customer');
 
 CREATE TABLE person (
    id  SERIAL PRIMARY KEY,
-   email varchar(255),
+   email varchar(255) UNIQUE,
    password varchar(255),
    title varchar(20),
    firstName varchar(255),

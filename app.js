@@ -16,6 +16,7 @@ const orderItemRouter = require("./routes/orderItem");
 const customerOrderRouter = require("./routes/customerOrder");
 const addressRouter = require("./routes/address");
 const orderRouter = require("./routes/order");
+const authenticationRouter = require("./routes/authentication");
 
 const app = express();
 
@@ -37,5 +38,7 @@ app.use("/orderItems", orderItemRouter);
 app.use("/customerOrders", customerOrderRouter);
 app.use("/address", addressRouter);
 app.use("/order", orderRouter);
+
+app.use("/auth", authenticationRouter);
 
 module.exports = app;

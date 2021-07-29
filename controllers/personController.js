@@ -28,6 +28,28 @@ const getSinglePerson = async (req, res) => {
   }
 };
 
+const getSinglePersonByEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const queryResult = await pool.query(
+      "SELECT * FROM person WHERE lower(email)=$1",
+      [email.toLowerCase()]
+    );
+
+    if (res) {
+      return res.send(queryResult.rows[0]);
+    }
+    return queryResult.rows[0];
+  } catch (error) {
+    console.error(error);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
+  }
+};
+
 const createNewPerson = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -37,15 +59,21 @@ const createNewPerson = async (req, res) => {
   const { email, password, title, firstName, lastName } = req.body;
   try {
     const updateQuery = {
-      text: `INSERT INTO person(email,password,title,firstName,lastName,userlevel) VALUES($1,$2,$3,$4,$5,0) RETURNING *`,
+      text: `INSERT INTO person(email,password,title,firstName,lastName,role) VALUES($1,$2,$3,$4,$5,'customer') RETURNING *`,
       values: [email, password, title, firstName, lastName],
     };
     const queryResult = await pool.query(updateQuery);
 
-    res.send(queryResult.rows[0]);
+    if (res) {
+      return res.send(queryResult.rows[0]);
+    }
+    return queryResult.rows[0];
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    if (res) {
+      return res.status(500).send(error.message);
+    }
+    throw error;
   }
 };
 const updatePerson = async (req, res) => {
@@ -119,6 +147,7 @@ const setRole = async (req, res) => {
 module.exports = {
   getAllPersons,
   getSinglePerson,
+  getSinglePersonByEmail,
   createNewPerson,
   updatePerson,
   deletePerson,

@@ -1,69 +1,61 @@
-### Get all existing shopping card items
-GET http://localhost:3000/shoppingCards/all
+### Get all customer orders
+GET http://localhost:3000/customerOrders/
 
-### Get all shopping card items for a user
-GET http://localhost:3000/shoppingCards/user/1
+### Get a customer order by order ID
+GET http://localhost:3000/customerOrders/id/1
+
+### Get all customer orders for a specific customer
+GET http://localhost:3000/customerOrders/user/1
 
 ### Create a new shopping card item
-POST  http://localhost:3000/shoppingCards/single
+POST  http://localhost:3000/customerOrders/
 content-type: application/json
 
 {
-  "product": 23,
-  "amount": 0,
-  "size": "s",
-  "color": "black",
-  "person": 1
+  "person": 10,
+  "orderTime": "2021-06-15",
+  "shippingTime": "2021-06-27",
+  "trackingNumber": "ABKU005Z"
 }
 
-### Create many new shopping card item
-POST  http://localhost:3000/shoppingCards/many
-content-type: application/json
-
-[
-  {
-    "product": 23,
-    "amount": 5,
-    "size": "M",
-    "color": "black",
-    "person": 1
-  },
-  {
-    "product": 23,
-    "amount": 4,
-    "size": "l",
-    "color": "Navy",
-    "person": 1
-  },
-  {
-    "product": 26,
-    "amount": 4,
-    "size": "S",
-    "color": "green",
-    "person": 1
-  },
-  {
-    "product": 26,
-    "amount": 0,
-    "size": "m",
-    "color": "green",
-    "person": 1
-  }
-]
-
-
-### Update a shopping card item
-PUT  http://localhost:3000/shoppingCards/5
+### Update customer order by its ID
+PUT  http://localhost:3000/customerOrders/10
 content-type: application/json
 
 {
-  "amount": -10,
-  "size": "L",
-  "color": "blue"
+  "person": 10,
+  "orderTime": "2016-06-22 19:10:25-02",
+  "shippingTime": "2021-06-22 22:10:25-02",
+  "trackingNumber": "ABKU005Z"
 }
 
-### DELETE a shopping card item by its id
-DELETE  http://localhost:3000/shoppingCards/deleteSingle/21
+### Update customer order by its ID
+PUT  http://localhost:3000/customerOrders/shippingInformation/2
+content-type: application/json
 
-### DELETE all shopping card items of a user by the user ID
-DELETE  http://localhost:3000/shoppingCards/deleteByUser/1
+{
+  "shippingTime": "2023-06-22 22:10:25-02",
+  "trackingNumber": "ABKU005Z"
+}
+
+### Update customer order shipping time
+
+PATCH http://localhost:3000/customerOrders/setShippingTime/2
+content-type: application/json
+
+{
+  "shippingTime": "2020-06-22 22:10:25-02"
+}
+
+### Update customer order shipping tracking number
+
+PATCH http://localhost:3000/customerOrders/trackingNumber/2
+content-type: application/json
+
+{
+  "trackingNumber": "ABKU005Z0001"
+}
+
+
+### DELETE a customer order by its id
+DELETE  http://localhost:3000/customerOrders/2

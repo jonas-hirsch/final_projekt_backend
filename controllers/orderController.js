@@ -63,7 +63,10 @@ const checkout = async (req, res) => {
     const deleteResult = await deleteShoppingCardItems(req);
     if (deleteResult !== true) return deleteResult;
 
-    res.send("Order performed");
+    // Change the stock amount for the cart items
+    // await changeStockState(req, true); TODO: Feature is not implemented yet
+
+    res.send("Order performed with order ID: " + createOrderResult.id);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
@@ -190,11 +193,33 @@ const cancelOrder = async (req, res) => {
         );
     }
 
-    res.send("Order canceled");
+    // await changeStockState(req, false);  TODO: Feature is not implemented yet
+
+    res.send(`Order with id ${orderId} canceled`);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
   }
+};
+
+const changeStockState = async (req, checkout) => {
+  const resultList = [];
+  await req.body.forEach(async (item) => {
+    const stockId = item.stock[0].id;
+    const { amount } = item;
+    if (checkout) {
+      amount * -1;
+    }
+    console.log(stockId + ":" + amount);
+
+    const result = await pool.query(
+      `UPDATE stock SET quantity=quantity+$1 WHERE id=$2 RETURNING *`,
+      [amount, stockId]
+    );
+    resultList.push(result);
+  });
+
+  return resultList;
 };
 
 module.exports = {

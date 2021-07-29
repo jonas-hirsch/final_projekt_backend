@@ -37,6 +37,41 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getProductsByCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  try {
+    const { rows: productRows } = await pool.query(
+      getProductQuery +
+        ` WHERE p.id IN (select product from productCategory where category=$1)`,
+      [categoryId]
+    );
+
+    if (productRows.length === 0) {
+      const queryResult = await pool.query(
+        "SELECT id FROM category WHERE id=$1",
+        [categoryId]
+      );
+
+      if (queryResult.rowCount === 0) {
+        return res
+          .status(404)
+          .send(
+            `The category with the ID ${categoryId} does not exist in the database.`
+          );
+      }
+    }
+
+    productRows.forEach((row) => {
+      replaceMediaFileNameByFullPath(row);
+    });
+
+    res.send(productRows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
 const getSingleProduct = async (req, res) => {
   const { id } = req.params;
   try {
@@ -117,10 +152,11 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const deleteProductCategoryQueryResult = await pool.query(
-      `DELETE FROM productCategory WHERE product=$1`,
-      [id]
-    );
+    // Delete all rows of all tables from the product to be deleted connected to the product table
+    await pool.query(`DELETE FROM media WHERE product=$1`, [id]);
+    await pool.query(`DELETE FROM stock WHERE product=$1`, [id]);
+    await pool.query(`DELETE FROM productCategory WHERE product=$1`, [id]);
+
     const deleteProductQuery = {
       text: `DELETE FROM product WHERE id=$1 RETURNING *`,
       values: [id],
@@ -171,6 +207,7 @@ async function createProductCategoryMapping(categories, id) {
 
 module.exports = {
   getAllProducts,
+  getProductsByCategory,
   getSingleProduct,
   createNewProduct,
   updateProduct,

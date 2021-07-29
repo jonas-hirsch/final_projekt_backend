@@ -9,10 +9,10 @@ POST  http://localhost:3000/shoppingCards/single
 content-type: application/json
 
 {
-  "product": 5,
-  "amount": -2,
-  "size": "M",
-  "color": "blue",
+  "product": 23,
+  "amount": 0,
+  "size": "s",
+  "color": "black",
   "person": 1
 }
 
@@ -22,17 +22,31 @@ content-type: application/json
 
 [
   {
-    "product": 5,
+    "product": 23,
     "amount": 5,
     "size": "M",
-    "color": "blue",
+    "color": "black",
     "person": 1
   },
   {
-    "product": 4,
-    "amount": -4,
-    "size": "M",
-    "color": "red",
+    "product": 23,
+    "amount": 4,
+    "size": "l",
+    "color": "Navy",
+    "person": 1
+  },
+  {
+    "product": 26,
+    "amount": 4,
+    "size": "S",
+    "color": "green",
+    "person": 1
+  },
+  {
+    "product": 26,
+    "amount": 0,
+    "size": "m",
+    "color": "green",
     "person": 1
   }
 ]
@@ -49,7 +63,7 @@ content-type: application/json
 }
 
 ### DELETE a shopping card item by its id
-DELETE  http://localhost:3000/shoppingCards/deleteSingle/1
+DELETE  http://localhost:3000/shoppingCards/deleteSingle/21
 
 ### DELETE all shopping card items of a user by the user ID
 DELETE  http://localhost:3000/shoppingCards/deleteByUser/1

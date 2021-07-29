@@ -152,10 +152,11 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const deleteProductCategoryQueryResult = await pool.query(
-      `DELETE FROM productCategory WHERE product=$1`,
-      [id]
-    );
+    // Delete all rows of all tables from the product to be deleted connected to the product table
+    await pool.query(`DELETE FROM media WHERE product=$1`, [id]);
+    await pool.query(`DELETE FROM stock WHERE product=$1`, [id]);
+    await pool.query(`DELETE FROM productCategory WHERE product=$1`, [id]);
+
     const deleteProductQuery = {
       text: `DELETE FROM product WHERE id=$1 RETURNING *`,
       values: [id],

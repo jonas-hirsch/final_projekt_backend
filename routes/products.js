@@ -11,6 +11,7 @@ const validateTitleAndDescription = [
 
 /* GET users listing. */
 router.get("/", productController.getAllProducts);
+router.get("/category/:categoryId", productController.getProductsByCategory);
 router.get("/:id", productController.getSingleProduct);
 router.post(
   "/",

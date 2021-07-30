@@ -12,10 +12,20 @@ const productsStockRouter = require("./routes/productsStock");
 const personRouter = require("./routes/persons");
 const categoryRouter = require("./routes/category");
 const shoppingCardRouter = require("./routes/shoppingCardRouter");
+const orderItemRouter = require("./routes/orderItem");
+const customerOrderRouter = require("./routes/customerOrder");
+const addressRouter = require("./routes/address");
+const orderRouter = require("./routes/order");
+const authenticationRouter = require("./routes/authentication");
 
 const app = express();
 
 app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: "x-authorization-token",
+  })
+);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,5 +39,11 @@ app.use("/products/stock", productsStockRouter);
 app.use("/persons", personRouter);
 app.use("/categories", categoryRouter);
 app.use("/shoppingCards", shoppingCardRouter);
+app.use("/orderItems", orderItemRouter);
+app.use("/customerOrders", customerOrderRouter);
+app.use("/address", addressRouter);
+app.use("/order", orderRouter);
+
+app.use("/auth", authenticationRouter);
 
 module.exports = app;

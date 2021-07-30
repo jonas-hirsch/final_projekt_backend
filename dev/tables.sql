@@ -28,7 +28,7 @@ CREATE TYPE role AS ENUM ('admin', 'customer');
 
 CREATE TABLE person (
    id  SERIAL PRIMARY KEY,
-   email varchar(255),
+   email varchar(255) UNIQUE,
    password varchar(255),
    title varchar(20),
    firstName varchar(255),
@@ -58,7 +58,8 @@ CREATE TABLE address (
    postCode varchar(255),
    country varchar(255),
    isPrimary boolean,
-   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
+   CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id),
+   CONSTRAINT single_primary_address UNIQUE(person, isPrimary)
 );
 
 CREATE TABLE customerOrder (
@@ -67,6 +68,7 @@ CREATE TABLE customerOrder (
    orderTime timestamp,
    shippingTime timestamp,
    trackingNumber varchar(255),
+   active boolean DEFAULT true,
    CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id)
 );
 

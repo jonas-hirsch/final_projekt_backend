@@ -37,4 +37,16 @@ const register = async (req, res) => {
   res.set("x-authorization-token", token).send("Login successful");
 };
 
-module.exports = { login, register };
+const getUserInformation = async (req, res) => {
+  try {
+    const { id, email, firstname, lastname, role } = await User.destructToken(
+      req.headers.authorization
+    );
+    return res.send({ id, email, firstname, lastname, role });
+  } catch (error) {
+    res.status(403).send(error.message);
+  }
+  res.send(req.headers.authorization);
+};
+
+module.exports = { login, register, getUserInformation };

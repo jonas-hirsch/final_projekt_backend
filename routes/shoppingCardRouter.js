@@ -38,6 +38,10 @@ router.post(
   validateBulkInsert,
   shoppingCardController.createManyNewShoppingCardItems
 );
+router.post(
+  "/manyByStock/:userId",
+  shoppingCardController.createManyNewShoppingCardItemsByStockId
+);
 router.put(
   "/:id",
   validateProductAmount,

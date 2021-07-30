@@ -76,6 +76,58 @@ const createManyNewShoppingCardItems = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+const createManyNewShoppingCardItemsByStockId = async (req, res) => {
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
+  const { userId } = req.params;
+
+  let dataArray = [];
+  let idArray = [];
+  req.body.forEach((element) => {
+    let { stockId, amount } = element;
+    dataArray = [...dataArray, [stockId, amount]];
+  });
+  req.body.forEach((element) => {
+    let { stockId } = element;
+    idArray.push(stockId);
+  });
+  console.log(dataArray);
+  try {
+    const stockQueryResult = await pool.query(
+      format("SELECT * FROM stock WHERE id IN(%L)", idArray)
+    );
+    if (stockQueryResult.rows.some((row) => row.quantity === 0)) {
+      return res.status(404).send("Not enough stock available");
+    }
+    if (stockQueryResult.rowCount != dataArray.length) {
+      return res.status(404).send("Not all stock items are available.");
+    }
+    const inputBodyCopy = [...req.body];
+    req.body = [];
+    inputBodyCopy.forEach((cartEntry) => {
+      const stockProduct = stockQueryResult.rows.find(
+        (stock) => stock.id === cartEntry.stockId
+      );
+      req.body.push({
+        product: stockProduct.product,
+        person: parseInt(userId),
+        amount: cartEntry.amount,
+        size: stockProduct.size,
+        color: stockProduct.color,
+      });
+    });
+    const insertResult = await createManyNewShoppingCardItems(req);
+
+    return res.send(insertResult);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+};
+
 const updateShoppingCardItem = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -149,6 +201,7 @@ module.exports = {
   getShoppingCarItemsByUserId,
   createNewShoppingCardItem,
   createManyNewShoppingCardItems,
+  createManyNewShoppingCardItemsByStockId,
   updateShoppingCardItem,
   deleteSingleShoppingCardItemById,
   deleteShoppingCardItemsByUserId,

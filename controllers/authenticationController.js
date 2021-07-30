@@ -23,6 +23,9 @@ const register = async (req, res) => {
   try {
     const createUserResult = await personController.createNewPerson(req);
     console.log(createUserResult);
+
+    const token = User.createToken(email);
+    return res.set("x-authorization-token", token).send(createUserResult);
   } catch (error) {
     console.error(error);
     if ((error.constraint = "unique_email")) {

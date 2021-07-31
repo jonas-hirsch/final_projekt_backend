@@ -23,7 +23,7 @@ const app = express();
 app.use(cors());
 app.use(
   cors({
-    exposedHeaders: "x-authorization-token",
+    exposedHeaders: ["x-authorization-token", "user-id"],
   })
 );
 app.use(logger("dev"));

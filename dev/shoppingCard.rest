@@ -37,6 +37,19 @@ content-type: application/json
   }
 ]
 
+### Create many new shopping card item
+POST  http://localhost:3000/shoppingCards/manyByStock/1
+content-type: application/json
+
+[
+  {
+    "stockId":120,"amount":1
+  },
+  {
+    "stockId":121,"amount":1
+  }
+]
+
 
 ### Update a shopping card item
 PUT  http://localhost:3000/shoppingCards/5

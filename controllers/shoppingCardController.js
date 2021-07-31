@@ -84,6 +84,49 @@ const createManyNewShoppingCardItems = async (req, res) => {
   }
 };
 
+const createNewShoppingCardItemByStockId = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { stockId } = req.params;
+  const { amount, user } = req.body;
+
+  try {
+    const stockQueryResult = await pool.query(
+      "SELECT * FROM stock WHERE id=$1",
+      [stockId]
+    );
+    const stockProduct = stockQueryResult.rows[0];
+    const insertUpdateResult = await pool.query(
+      `
+      INSERT INTO shoppingCard(product,amount,person,size,color) 
+        VALUES($1,$2,$3,$4,$5)
+      ON CONFLICT ON CONSTRAINT product_once 
+      DO 
+        UPDATE SET amount=(
+          SELECT amount 
+          FROM shoppingCard 
+          WHERE product=$1 AND person=$3 AND size=$4 AND color=$5 ) + $2 
+          RETURNING *
+      `,
+      [
+        stockProduct.product,
+        amount,
+        user,
+        stockProduct.size,
+        stockProduct.color,
+      ]
+    );
+
+    res.send(insertUpdateResult.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.send(error.message);
+  }
+};
+
 const createManyNewShoppingCardItemsByStockId = async (req, res) => {
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
@@ -226,6 +269,7 @@ module.exports = {
   getAllShoppingCardItems,
   getShoppingCarItemsByUserId,
   createNewShoppingCardItem,
+  createNewShoppingCardItemByStockId,
   createManyNewShoppingCardItems,
   createManyNewShoppingCardItemsByStockId,
   updateShoppingCardItem,

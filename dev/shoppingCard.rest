@@ -16,6 +16,15 @@ content-type: application/json
   "person": 1
 }
 
+### Create a new shopping card item by the product stock id
+POST  http://localhost:3000/shoppingCards/singleByStockId/40
+content-type: application/json
+
+{
+  "user": 1,
+  "amount": 1
+}
+
 ### Create many new shopping card item
 POST  http://localhost:3000/shoppingCards/many
 content-type: application/json

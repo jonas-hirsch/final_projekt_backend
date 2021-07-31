@@ -14,7 +14,10 @@ const login = async (req, res) => {
   if (!match) return res.status(400).send("Invalid credentials");
 
   const token = User.createToken(email.trim().toLowerCase());
-  res.set("x-authorization-token", token).send("Login successful");
+  res
+    .set("x-authorization-token", token)
+    .set("user-id", person.id)
+    .send("Login successful");
 };
 
 const register = async (req, res) => {
@@ -25,7 +28,10 @@ const register = async (req, res) => {
     console.log(createUserResult);
 
     const token = User.createToken(email);
-    return res.set("x-authorization-token", token).send(createUserResult);
+    return res
+      .set("x-authorization-token", token)
+      .set("user-id", createUserResult.id)
+      .send(createUserResult);
   } catch (error) {
     console.error(error);
     if ((error.constraint = "unique_email")) {
@@ -35,9 +41,6 @@ const register = async (req, res) => {
     }
     return res.status(500).send(error.constraint);
   }
-
-  const token = User.createToken(email.trim().toLowerCase());
-  res.set("x-authorization-token", token).send("Login successful");
 };
 
 const getUserInformation = async (req, res) => {

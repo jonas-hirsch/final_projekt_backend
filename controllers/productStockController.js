@@ -17,6 +17,34 @@ const getAllStock = async (req, res) => {
   }
 };
 
+const getStockById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const queryResult = await pool.query(
+      `
+      SELECT * 
+      FROM stock 
+      INNER JOIN product ON product.id = stock.product
+      CROSS  JOIN LATERAL (
+        SELECT json_agg(m) AS media
+        FROM   media m
+        WHERE  m.product = product.id
+        ) c1
+      WHERE stock.id = $1`,
+      [id]
+    );
+
+    if (queryResult.rowCount < 1) {
+      return res.status(404).send("Could not get any stock items.");
+    }
+
+    res.send(queryResult.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
 const getAvailableStockForProduct = async (req, res) => {
   const { productId } = req.params;
   const query = {
@@ -260,6 +288,7 @@ const deleteStock = async (req, res) => {
 
 module.exports = {
   getAllStock,
+  getStockById,
   getAvailableStockForProduct,
   getAvailableStockForProductSpecification,
   updateStockObject,

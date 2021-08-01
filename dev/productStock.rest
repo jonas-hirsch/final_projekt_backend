@@ -1,12 +1,15 @@
 ### GET all stock rows
-GET http://localhost:3000/products/stock
+GET http://localhost:3000/products/stock/all
 
 ### GET all stock rows for a specific product
-GET http://localhost:3000/products/stock/4
+GET http://localhost:3000/products/stock/38
 
+
+### GET stock info by stock ID
+GET http://localhost:3000/products/stock/id/114
 
 ### Set the values of a stock entry
-POST  http://localhost:3000/products/stock/4
+POST  http://localhost:3000/products/stock/114
 content-type: application/json
 
 {

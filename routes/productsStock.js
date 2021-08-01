@@ -49,9 +49,9 @@ const validateDateRange = (req, res, next) => {
   }
   next();
 };
-
-router.get("/", productStockController.getAllStock);
+router.get("/all", productStockController.getAllStock);
 router.get("/:productId", productStockController.getAvailableStockForProduct);
+router.get("/id/:id", productStockController.getStockById);
 router.put(
   "/:id",
   validatePrice,

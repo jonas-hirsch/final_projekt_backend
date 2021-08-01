@@ -29,19 +29,38 @@ const getShoppingCarItemsByUserId = async (req, res) => {
   }
 };
 
+const getShoppingCarItemsWithStockByUserId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const queryResult = await pool.query(
+      `SELECT shoppingCard.*, price
+      FROM shoppingCard
+      INNER JOIN stock
+      ON stock.id = shoppingCard.stock
+      WHERE person=$1`,
+      [id]
+    );
+
+    res.send(queryResult.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
 const createNewShoppingCardItem = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { product, amount, size, color, person } = req.body;
+  const { product, amount, size, color, person, stock } = req.body;
   try {
     const query = {
-      text: `INSERT INTO shoppingCard (product,amount,size,color,person) 
-      VALUES($1,$2,$3,$4,$5) 
+      text: `INSERT INTO shoppingCard (product,amount,size,color,person,stock) 
+      VALUES($1,$2,$3,$4,$5,$6) 
       RETURNING *`,
-      values: [product, amount, size, color, person],
+      values: [product, amount, size, color, person, stock],
     };
     const queryResult = await pool.query(query);
 
@@ -60,13 +79,13 @@ const createManyNewShoppingCardItems = async (req, res) => {
 
   let dataArray = [];
   req.body.forEach((element) => {
-    let { product, amount, size, color, person } = element;
-    dataArray = [...dataArray, [product, amount, size, color, person]];
+    let { product, amount, size, color, person, stock } = element;
+    dataArray = [...dataArray, [product, amount, size, color, person, stock]];
   });
   try {
     const queryResult = await pool.query(
       format(
-        "INSERT INTO shoppingCard (product,amount,size,color,person) VALUES %L RETURNING *",
+        "INSERT INTO shoppingCard (product,amount,size,color,person,stock) VALUES %L RETURNING *",
         dataArray
       )
     );
@@ -101,8 +120,8 @@ const createNewShoppingCardItemByStockId = async (req, res) => {
     const stockProduct = stockQueryResult.rows[0];
     const insertUpdateResult = await pool.query(
       `
-      INSERT INTO shoppingCard(product,amount,person,size,color) 
-        VALUES($1,$2,$3,$4,$5)
+      INSERT INTO shoppingCard(product,amount,person,size,color,stockId) 
+        VALUES($1,$2,$3,$4,$5,$6)
       ON CONFLICT ON CONSTRAINT product_once 
       DO 
         UPDATE SET amount=(
@@ -117,6 +136,7 @@ const createNewShoppingCardItemByStockId = async (req, res) => {
         user,
         stockProduct.size,
         stockProduct.color,
+        stockId,
       ]
     );
 
@@ -185,11 +205,11 @@ const updateShoppingCardItem = async (req, res) => {
   }
 
   const { id } = req.params;
-  const { amount, size, color } = req.body;
+  const { amount, size, color, stockId } = req.body;
   try {
     const query = {
-      text: `UPDATE shoppingCard SET amount=$1, color=$2, size=$3 WHERE id=$4 RETURNING *`,
-      values: [amount, color, size, id],
+      text: `UPDATE shoppingCard SET amount=$1, color=$2, size=$3, stockId=$4 WHERE id=$4 RETURNING *`,
+      values: [amount, color, size, id, stockId],
     };
     const queryResult = await pool.query(query);
 
@@ -268,6 +288,7 @@ const deleteShoppingCardItemsByUserId = async (
 module.exports = {
   getAllShoppingCardItems,
   getShoppingCarItemsByUserId,
+  getShoppingCarItemsWithStockByUserId,
   createNewShoppingCardItem,
   createNewShoppingCardItemByStockId,
   createManyNewShoppingCardItems,

@@ -4,6 +4,9 @@ GET http://localhost:3000/shoppingCards/all
 ### Get all shopping card items for a user
 GET http://localhost:3000/shoppingCards/user/1
 
+### Get all shopping card items for a user
+GET http://localhost:3000/shoppingCards/user/price/1
+
 ### Create a new shopping card item
 POST  http://localhost:3000/shoppingCards/single
 content-type: application/json

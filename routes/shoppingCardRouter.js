@@ -28,6 +28,10 @@ const validateBulkInsert = (req, res, next) => {
 
 router.get("/all", shoppingCardController.getAllShoppingCardItems);
 router.get("/user/:id", shoppingCardController.getShoppingCarItemsByUserId);
+router.get(
+  "/user/price/:id",
+  shoppingCardController.getShoppingCarItemsWithStockByUserId
+);
 router.post(
   "/single",
   validateProductAmount,

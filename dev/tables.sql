@@ -47,7 +47,9 @@ CREATE TABLE shoppingCard (
    valideTo timestamp,
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id),
    CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id),
-   CONSTRAINT product_once UNIQUE(product, person, color, size)
+   CONSTRAINT product_once UNIQUE(product, person, color, size),
+   CONSTRAINT FK_Stock FOREIGN KEY (stock) REFERENCES stock(id)
+
 );
 
 CREATE TABLE address (

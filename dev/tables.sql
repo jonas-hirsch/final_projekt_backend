@@ -45,6 +45,7 @@ CREATE TABLE shoppingCard (
    size varchar(255),
    valideFrom timestamp,
    valideTo timestamp,
+   stock int,
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id),
    CONSTRAINT fk_person FOREIGN KEY(person) REFERENCES person(id),
    CONSTRAINT product_once UNIQUE(product, person, color, size),

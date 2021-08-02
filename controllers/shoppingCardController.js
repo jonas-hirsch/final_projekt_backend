@@ -120,7 +120,7 @@ const createNewShoppingCardItemByStockId = async (req, res) => {
     const stockProduct = stockQueryResult.rows[0];
     const insertUpdateResult = await pool.query(
       `
-      INSERT INTO shoppingCard(product,amount,person,size,color,stockId) 
+      INSERT INTO shoppingCard(product,amount,person,size,color,stock) 
         VALUES($1,$2,$3,$4,$5,$6)
       ON CONFLICT ON CONSTRAINT product_once 
       DO 

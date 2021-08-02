@@ -73,6 +73,14 @@ content-type: application/json
   "color": "blue"
 }
 
+### xab
+PATCH http://localhost:3000/shoppingCards/270
+content-type: application/json
+
+{
+  "amount": 10
+}
+
 ### DELETE a shopping card item by its id
 DELETE  http://localhost:3000/shoppingCards/deleteSingle/1
 

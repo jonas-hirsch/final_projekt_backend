@@ -56,6 +56,11 @@ router.put(
   validateProductAmount,
   shoppingCardController.updateShoppingCardItem
 );
+router.patch(
+  "/:id",
+  validateProductAmount,
+  shoppingCardController.updateShoppingCardItemQuantity
+);
 router.delete(
   "/deleteSingle/:id",
   shoppingCardController.deleteSingleShoppingCardItemById

@@ -187,6 +187,7 @@ const createManyNewShoppingCardItemsByStockId = async (req, res) => {
         amount: cartEntry.amount,
         size: stockProduct.size,
         color: stockProduct.color,
+        stock: cartEntry.stockId,
       });
     });
     const insertResult = await createManyNewShoppingCardItems(req);

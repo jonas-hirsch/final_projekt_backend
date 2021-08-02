@@ -220,6 +220,29 @@ const updateShoppingCardItem = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+const updateShoppingCardItemQuantity = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { id } = req.params;
+  const { amount } = req.body;
+  try {
+    const query = {
+      text: `UPDATE shoppingCard SET amount=$1 WHERE id=$2 RETURNING *`,
+      values: [amount, id],
+    };
+    const queryResult = await pool.query(query);
+
+    res.send(queryResult.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
 const deleteSingleShoppingCardItemById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -295,6 +318,7 @@ module.exports = {
   createManyNewShoppingCardItems,
   createManyNewShoppingCardItemsByStockId,
   updateShoppingCardItem,
+  updateShoppingCardItemQuantity,
   deleteSingleShoppingCardItemById,
   deleteShoppingCardItemsByUserId,
 };

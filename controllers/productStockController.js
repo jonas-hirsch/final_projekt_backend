@@ -38,12 +38,27 @@ const getStockById = async (req, res) => {
       return res.status(404).send("Could not get any stock items.");
     }
 
+    replaceMediaFileNameByFullPath(queryResult.rows[0]);
+
     res.send(queryResult.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
   }
 };
+
+function replaceMediaFileNameByFullPath(row) {
+  if (row.media) {
+    const mediaPath =
+      "https://" + process.env.MEDIA_URL + "/" + process.env.MEDIA_FOLDER + "/";
+
+    row.media.forEach((media) => {
+      if (row.media) {
+        media.path = mediaPath + media.path;
+      }
+    });
+  }
+}
 
 const getAvailableStockForProduct = async (req, res) => {
   const { productId } = req.params;

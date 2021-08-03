@@ -10,7 +10,7 @@ POST http://localhost:3000/categories/
 content-type: application/json
 
 {
-  "name": "Gear Wrong"
+  "name": "BOOKS"
 }
 
 ### Update the name of a category
@@ -18,7 +18,7 @@ PUT  http://localhost:3000/categories/4
 content-type: application/json
 
 {
-  "name": "Gear"
+  "name": "Books"
 }
 
 ### Delete a category by id

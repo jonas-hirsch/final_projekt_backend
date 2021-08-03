@@ -17,6 +17,7 @@ const customerOrderRouter = require("./routes/customerOrder");
 const addressRouter = require("./routes/address");
 const orderRouter = require("./routes/order");
 const authenticationRouter = require("./routes/authentication");
+const paymentServer = require("./routes/paymentServer")
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
     exposedHeaders: ["x-authorization-token", "user-id"],
   })
 );
+app.use(express.static("."));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,5 +47,6 @@ app.use("/address", addressRouter);
 app.use("/order", orderRouter);
 
 app.use("/auth", authenticationRouter);
+app.use("/payment", paymentServer);
 
 module.exports = app;

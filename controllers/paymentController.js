@@ -12,7 +12,7 @@ const createPayment = async (req, res) => {
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: sum, // 100
+      amount: Math.floor(sum), // 100
       currency: "eur"
     });
 
@@ -27,7 +27,7 @@ const calculateOrderAmount = async (id) => {
         const result = await pool.query(`SELECT * FROM orderItem WHERE customerOrder = $1`, [id])
         // console.log(result.rows)
         result.rows.forEach(item => {
-            sum += item.amount * parseFloat(item.price || 0).toFixed(2)
+            sum += item.amount * parseFloat(item.price).toFixed(2)
             console.log(sum)
         })
         return { sum }

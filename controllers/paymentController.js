@@ -8,7 +8,7 @@ const createPayment = async (req, res) => {
     const {id} = req.params
     const { sum } = await calculateOrderAmount(id)
 
-    console.log({amount})
+    console.log({sum})
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({

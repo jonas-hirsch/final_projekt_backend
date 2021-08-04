@@ -112,8 +112,8 @@ const verifyStockAmount = async (
     const shoppingCardArticle = shoppingCardQueryResult.rows.find((item) => {
       return (
         stockArticle.product === item.product &&
-        stockArticle.size.toLowerCase() === item.size.toLowerCase() &&
-        stockArticle.color.toLowerCase() === item.color.toLowerCase()
+        stockArticle.size?.toLowerCase() === item.size?.toLowerCase() &&
+        stockArticle.color?.toLowerCase() === item.color?.toLowerCase()
       );
     });
     if (shoppingCardArticle.amount > stockArticle.stock[0].quantity) {

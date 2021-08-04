@@ -102,8 +102,8 @@ const getAvailableStockForProductSpecification = async (req, res) => {
         const stockItem = queryResult.rows.filter(
           (row) =>
             row.product === product &&
-            row.size.toLowerCase() === size.toLowerCase() &&
-            row.color.toLowerCase() === color.toLowerCase()
+            row.size?.toLowerCase() === size?.toLowerCase() &&
+            row.color?.toLowerCase() === color?.toLowerCase()
         );
         item.stock = stockItem;
       });

@@ -8,9 +8,9 @@ CREATE TABLE stock (
    id  SERIAL PRIMARY KEY,
    price real CHECK (price >= 0),
    product int,
-   discountAbsolute real (discountAbsolute >= 0),
-   discountRelative int (discountRelative >= 0),
-   quantity int CHECK (quantity >= 0)
+   discountAbsolute real CHECK (discountAbsolute >= 0),
+   discountRelative int CHECK (discountRelative >= 0),
+   quantity int CHECK (quantity >= 0),
    color varchar(255),
    size varchar(255),
    CONSTRAINT fk_product FOREIGN KEY(product) REFERENCES product(id)
@@ -91,7 +91,7 @@ CREATE TABLE orderItem (
 CREATE TABLE category (
    id  SERIAL PRIMARY KEY,
    name varchar(255)
-)
+);
 
 CREATE TABLE productCategory (
    id SERIAL PRIMARY KEY,

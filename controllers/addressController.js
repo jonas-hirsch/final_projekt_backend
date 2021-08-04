@@ -39,7 +39,7 @@ const getAddressesByPerson = async (req, res) => {
   const { personId } = req.params;
   try {
     const query = {
-      text: `SELECT * FROM address WHERE person=$1`,
+      text: `SELECT * FROM address WHERE person=$1 ORDER BY id`,
       values: [personId],
     };
     const queryResult = await pool.query(query);
@@ -99,8 +99,10 @@ const createNewAddress = async (req, res) => {
 };
 
 const updateAddress = async (req, res) => {
+  console.log("updateAddress");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 

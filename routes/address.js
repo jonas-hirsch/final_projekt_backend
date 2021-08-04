@@ -5,7 +5,6 @@ const { body } = require("express-validator");
 
 const validateCategoryData = [
   body("street").isLength({ min: 3 }),
-  body("houseNumber").isLength({ min: 1 }),
   body("city").isLength({ min: 3 }),
   body("postcode").isLength({ min: 3 }),
   body("country").isLength({ min: 3 }),

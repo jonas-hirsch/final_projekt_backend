@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 
 const getAllAddresses = async (req, res) => {
   try {
-    const queryResult = await pool.query(`SELECT * FROM address`);
+    const queryResult = await pool.query(`SELECT * FROM address ORDER BY id`);
 
     res.send(queryResult.rows);
   } catch (error) {
@@ -17,7 +17,7 @@ const getAddressById = async (req, res) => {
   const { id } = req.params;
   try {
     const query = {
-      text: `SELECT * FROM address WHERE id=$1`,
+      text: `SELECT * FROM address WHERE id=$1 ORDER BY id`,
       values: [id],
     };
     const queryResult = await pool.query(query);
@@ -39,7 +39,7 @@ const getAddressesByPerson = async (req, res) => {
   const { personId } = req.params;
   try {
     const query = {
-      text: `SELECT * FROM address WHERE person=$1`,
+      text: `SELECT * FROM address WHERE person=$1 ORDER BY id`,
       values: [personId],
     };
     const queryResult = await pool.query(query);
@@ -99,8 +99,10 @@ const createNewAddress = async (req, res) => {
 };
 
 const updateAddress = async (req, res) => {
+  console.log("updateAddress");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 
@@ -140,7 +142,7 @@ const setAddressToPrimary = async (req, res) => {
   try {
     // 1. Find the person for the given address
     const getPersonQuery = {
-      text: `SELECT person FROM address WHERE id=$1`,
+      text: `SELECT person FROM address WHERE id=$1 ORDER BY id`,
       values: [id],
     };
     const getPersonQueryResult = await pool.query(getPersonQuery);
@@ -169,7 +171,7 @@ const setAddressToPrimary = async (req, res) => {
 
     // 4. Get all addresses and return them.
     const personQuery = {
-      text: `SELECT * FROM address WHERE person=$1`,
+      text: `SELECT * FROM address WHERE person=$1 ORDER BY id`,
       values: [getPersonQueryResult.rows[0].person],
     };
     const queryResult = await pool.query(personQuery);

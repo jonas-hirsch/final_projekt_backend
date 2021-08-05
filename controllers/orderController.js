@@ -66,7 +66,10 @@ const checkout = async (req, res) => {
     // Change the stock amount for the cart items
     // await changeStockState(req, true); TODO: Feature is not implemented yet
 
-    res.send("Order performed with order ID: " + createOrderResult.id);
+    res.send({
+      orderId: createOrderResult.id,
+      message: "Order performed with order ID: " + createOrderResult.id,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
